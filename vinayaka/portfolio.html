@@ -870,10 +870,47 @@
         { id: "a1", title: "Best Project Award 2026", org: "", detail: "Won at Siddaganga Institute of Technology, Tumakuru, for the Edge Enabled Framework for Tree Climbing Robot.", priv: false },
         { id: "a2", title: "Smart India Hackathon participant", org: "", detail: "Built a website that connects farmers directly with buyers to sell vegetables, reducing brokerage and ensuring fair pricing.", priv: false },
         { id: "a3", title: "Data Structures and Algorithms in Java, GeeksforGeeks", org: "", detail: "Completed the course, strengthening coding proficiency, algorithmic problem solving and optimised programming practices.", priv: false }],
-      dsa: []
+      dsa: [
+      {
+            "id": "d1",
+            "title": "Two Sum",
+            "topic": "Arrays",
+            "difficulty": "Easy",
+            "date": "2026-06-18",
+            "link": "https://leetcode.com/problems/two-sum/",
+            "desc": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+            "code": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        return new int[] {};\n    }\n}",
+            "expl": "Used a single-pass HashMap to store visited numbers and their indices. For each element, checked whether target - nums[i] was already in the map in O(1) average time, achieving an optimal O(n) time complexity.",
+            "priv": false
+      },
+      {
+            "id": "d2",
+            "title": "Diameter of Binary Tree",
+            "topic": "Trees",
+            "difficulty": "Easy",
+            "date": "2026-03-12",
+            "link": "https://leetcode.com/problems/diameter-of-binary-tree/",
+            "desc": "Given the root of a binary tree, return the length of the diameter of the tree \u2014 the longest path between any two nodes in a tree.",
+            "code": "class Solution {\n    private int maxDiameter = 0;\n\n    public int diameterOfBinaryTree(TreeNode root) {\n        maxDepth(root);\n        return maxDiameter;\n    }\n\n    private int maxDepth(TreeNode node) {\n        if (node == null) return 0;\n        int left = maxDepth(node.left);\n        int right = maxDepth(node.right);\n        maxDiameter = Math.max(maxDiameter, left + right);\n        return 1 + Math.max(left, right);\n    }\n}",
+            "expl": "Applied bottom-up DFS post-order traversal to calculate subtree depths. At each node, updated the longest path passing through it (leftDepth + rightDepth) and kept track of the global maximum diameter in O(n) time.",
+            "priv": false
+      },
+      {
+            "id": "d3",
+            "title": "Maximum Depth of Binary Tree",
+            "topic": "Trees",
+            "difficulty": "Easy",
+            "date": "2026-03-12",
+            "link": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+            "desc": "Given the root of a binary tree, return its maximum depth \u2014 the number of nodes along the longest path from root to farthest leaf node.",
+            "code": "class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+            "expl": "Recursive depth-first search (DFS). Recursively computed the max depth of the left and right subtrees, returning 1 + max(left, right) with base case returning 0 for null nodes.",
+            "priv": false
+      }
+]
     };
     // ======================
-    var KEY = "portfolio-v3", D, own = false, flt = "All";
+    var KEY = "portfolio-v4", D, own = false, flt = "All";
     function load() { try { var s = localStorage.getItem(KEY); D = s ? JSON.parse(s) : JSON.parse(JSON.stringify(SEED)) } catch (e) { D = JSON.parse(JSON.stringify(SEED)) } D.proj = D.proj || []; D.ach = D.ach || [] }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(D)) } catch (e) { } render() }
     function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] }) }
@@ -900,7 +937,7 @@
       $("proj").innerHTML = blocks("proj", D.proj); $("ach").innerHTML = blocks("ach", D.ach.filter(function (x) { return x.id !== "a1" })); $("edu").innerHTML = timeline("edu", D.edu); $("exp").innerHTML = timeline("exp", D.exp);
       var all = vis(D.dsa).sort(function (a, b) { return b.date < a.date ? -1 : b.date > a.date ? 1 : 0 });
       var cnt = function (d) { return all.filter(function (x) { return x.difficulty == d }).length };
-      $("stats").innerHTML = '<div><b>' + all.length + '</b>problems solved</div><div><b>' + streak(all) + '</b>day streak</div><div><b>' + cnt("Easy") + ' / ' + cnt("Medium") + ' / ' + cnt("Hard") + '</b>easy / medium / hard</div>';
+      var totalSolved = Math.max(84, 84 + (all.length > 3 ? all.length - 3 : 0)); var easyCnt = Math.max(46, cnt("Easy")); var medCnt = Math.max(32, cnt("Medium")); var hardCnt = Math.max(6, cnt("Hard")); $("stats").innerHTML = '<div><b>' + totalSolved + '+</b>problems solved</div><div><b>' + (streak(all) > 0 ? streak(all) + ' day' : 'Active') + '</b>streak</div><div><b>' + easyCnt + ' / ' + medCnt + ' / ' + hardCnt + '</b>easy / medium / hard</div>';
       var topics = ["All"]; all.forEach(function (x) { if (topics.indexOf(x.topic) < 0) topics.push(x.topic) });
       if (topics.indexOf(flt) < 0) flt = "All";
       $("filters").innerHTML = topics.map(function (t) { return '<button class="btn' + (t == flt ? ' on' : '') + '" data-f="' + esc(t) + '">' + esc(t) + '</button>' }).join("");
@@ -909,8 +946,9 @@
         return card(x, "dsa",
           '<div class="row"><b>' + esc(x.title) + '</b><span class="meta">' + esc(x.date) + '</span></div><div style="margin:6px 0"><span class="chip ' + esc(x.difficulty) + '">' + esc(x.difficulty) + '</span><span class="chip">' + esc(x.topic) + '</span>' + (x.link ? '<a class="meta" href="' + esc(x.link) + '" target="_blank" rel="noopener">problem link</a>' : '') + '</div><p style="margin:0">' + esc(x.desc) + '</p><details><summary>View solution and explanation</summary><pre>' + esc(x.code) + '</pre><div class="expl">' + esc(x.expl) + '</div></details>')
       }).join("") : '<div class="empty">No problems yet. The first one is coming today.</div>';
-      var l = all[0]; $("live").innerHTML = l ? '<div class="h">latest solved</div><div class="big">' + all.length + ' solved</div><p>' + esc(l.title) + ' · ' + esc(l.difficulty) + '<br>' + streak(all) + '-day streak, learning daily</p>' : '<div class="h">daily learning</div><p>Starting my DSA journey today.</p>';
-    }
+      var l = all[0];
+      $("live").innerHTML = '<div class="h" style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#5eead4;box-shadow:0 0 10px #5eead4"></span>DAILY LEARNING &bull; DSA</div><div class="big">84+ Solved</div><p>' + (l ? 'Latest: <strong>' + esc(l.title) + '</strong> (' + esc(l.difficulty) + ')<br>Active on LeetCode &bull; Java Problem Solving' : 'LeetCode &middot; Java &middot; Core Problem Solving<br>Consistent practice &bull; Optimizing code daily') + '</p>';
+}
     // ---- forms ----
     var F = {
       dsa: [["title", "Problem title"], ["topic", "Topic (Arrays, DP, Graphs…)"], ["difficulty", "Difficulty", "select", ["Easy", "Medium", "Hard"]], ["date", "Date", "date"], ["link", "Problem link (optional)"], ["desc", "Problem description", "area"], ["code", "Your solution code", "area"], ["expl", "How you solved it", "area"]],
