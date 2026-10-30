@@ -948,7 +948,7 @@
           '<div class="row"><b>' + esc(x.title) + '</b><span class="meta">' + esc(x.date) + '</span></div><div style="margin:6px 0"><span class="chip ' + esc(x.difficulty) + '">' + esc(x.difficulty) + '</span><span class="chip">' + esc(x.topic) + '</span>' + (x.link ? '<a class="meta" href="' + esc(x.link) + '" target="_blank" rel="noopener">problem link</a>' : '') + '</div><p style="margin:0">' + esc(x.desc) + '</p><details><summary>View solution and explanation</summary><pre>' + esc(x.code) + '</pre><div class="expl">' + esc(x.expl) + '</div></details>')
       }).join("") : '<div class="empty">No problems yet. The first one is coming today.</div>';
       var l = all[0];
-      $("live").innerHTML = '<div class="h" style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#5eead4;box-shadow:0 0 10px #5eead4"></span>DAILY LEARNING &bull; DSA</div><div class="big">84+ Solved</div><p>' + (l ? 'Latest: <strong>' + esc(l.title) + '</strong> (' + esc(l.difficulty) + ')<br>Active on LeetCode &bull; Java Problem Solving' : 'LeetCode &middot; Java &middot; Core Problem Solving<br>Consistent practice &bull; Optimizing code daily') + '</p>';
+      $("live").innerHTML = '<div class="h" style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#5eead4;box-shadow:0 0 10px #5eead4"></span>DAILY LEARNING &bull; DSA</div><div class="big">84+ Solved</div><p>' + (l ? 'Latest: <strong>' + esc(l.title) + '</strong> (' + esc(l.difficulty) + ')' : 'LeetCode &middot; Java &middot; Core Problem Solving<br>Consistent practice &bull; Optimizing code daily') + '</p>';
 }
     // ---- forms ----
     var F = {
