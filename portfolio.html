@@ -863,9 +863,9 @@
         { id: "x2", title: "Technician", org: "Bosch ATMO6 Pvt. Ltd.", period: "Jul 2023 – Dec 2023", detail: "Performed system maintenance and troubleshooting.\nSupported smooth operation of industrial equipment.", priv: false },
         { id: "x3", title: "Diploma Apprentice Trainee", org: "SEG Automotive Pvt. Ltd.", period: "Jul 2022 – Jul 2023", detail: "Assisted in improving manufacturing workflow efficiency.\nSupported process planning and production activities.", priv: false }],
       proj: [
-        { id: "p1", title: "Edge Enabled Framework for Tree Climbing Robot", org: "Raspberry Pi, ESP32, Python, Bluetooth, Android", detail: "Built a Bluetooth-controlled tree-climbing robot with ESP32 motor control and Raspberry Pi edge processing for areca nut harvesting.\nIntegrated a robotic arm, camera monitoring and safety mechanisms for automated harvesting.\nDesigned it to work reliably across different tree diameters with adaptive mechanical control.", priv: false },
+        { id: "p1", title: "Edge Enabled Framework for Tree Climbing Robot", org: "Raspberry Pi, ESP32, Python, Bluetooth, Android", role: "Team Leader", detail: "Led a team to build a Bluetooth-controlled tree-climbing robot for automated areca nut harvesting.\nDesigned ESP32 motor control, Raspberry Pi edge processing, robotic arm, and camera monitoring system.\nEnsured reliable operation across different tree diameters with adaptive mechanical control.\nWon Best Project Award 2026 at Siddaganga Institute of Technology, Tumakuru.", priv: false },
         { id: "p2", title: "Invoice Generating Application", org: "Java, SQLite, Android Studio", detail: "Built an Android app for invoice generation and management, with automatic tax and total calculations.\nStored invoice records locally using SQLite.", priv: false },
-        { id: "p3", title: "Taras Batteries Official Website", org: "HTML, CSS, PHP, MySQL, HostGator", link: "https://tarasbatteries.com/", detail: "Built and deployed the official production website for Taras Batteries (tarasbatteries.com).\nImplemented the backend, database integration, product showcase, and hosting on HostGator.", priv: false }],
+        { id: "p3", title: "Taras Batteries Official Website", org: "HTML, CSS, PHP, MySQL, HostGator", link: "https://tarasbatteries.com/", detail: "Built and deployed the official production website: https://tarasbatteries.com/\nImplemented the backend, responsive product catalog, customer inquiries, database integration, and hosting configuration on HostGator.", priv: false }],
       ach: [
         { id: "a1", title: "Best Project Award 2026", org: "", detail: "Won at Siddaganga Institute of Technology, Tumakuru, for the Edge Enabled Framework for Tree Climbing Robot.", priv: false },
         { id: "a2", title: "Smart India Hackathon participant", org: "", detail: "Built a website that connects farmers directly with buyers to sell vegetables, reducing brokerage and ensuring fair pricing.", priv: false },
@@ -910,10 +910,11 @@
 ]
     };
     // ======================
-    var KEY = "portfolio-v5", D, own = false, flt = "All";
-    function load() { try { var s = localStorage.getItem(KEY); D = s ? JSON.parse(s) : JSON.parse(JSON.stringify(SEED)) } catch (e) { D = JSON.parse(JSON.stringify(SEED)) } D.proj = D.proj || []; D.ach = D.ach || [] }
+    var KEY = "portfolio-v7", D, own = false, flt = "All";
+    function load() { try { var s = localStorage.getItem(KEY); D = s ? JSON.parse(s) : JSON.parse(JSON.stringify(SEED)) } catch (e) { D = JSON.parse(JSON.stringify(SEED)) } D.proj = D.proj || []; D.ach = D.ach || []; SEED.proj.forEach(function(sp){ var ep = D.proj.find(function(p){ return p.id === sp.id }); if (ep) { if (sp.link && !ep.link) ep.link = sp.link; if (sp.id === 'p3') { ep.link = sp.link; ep.detail = sp.detail; } } }); }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(D)) } catch (e) { } render() }
     function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] }) }
+    function autolink(s) { return esc(s).replace(new RegExp("(https?://[^\\s<]+)", "g"), '<a href="$1" target="_blank" rel="noopener" style="color:var(--acc);font-weight:600;text-decoration:underline">$1</a>'); }
     function vis(a) { return a.filter(function (x) { return own || !x.priv }) }
     function $(i) { return document.getElementById(i) }
     function streak(list) {
@@ -926,7 +927,7 @@
       return '<div class="card' + (x.priv ? ' priv' : '') + '">' + body + (own ? '<div class="btns"><button class="btn" data-edit="' + type + ':' + x.id + '">Edit</button><button class="btn" data-tog="' + type + ':' + x.id + '">' + (x.priv ? 'Make public' : 'Make private') + '</button><button class="btn" data-del="' + type + ':' + x.id + '">Delete</button></div>' : '') + '</div>'
     }
     function timeline(type, arr) { var v = vis(arr); return v.length ? v.map(function (x) { return card(x, type, '<div class="row"><b>' + esc(x.title) + '</b><span class="meta">' + esc(x.period) + '</span></div><div class="meta">' + esc(x.org) + '</div><p style="margin:8px 0 0;white-space:pre-line">' + esc(x.detail) + '</p>') }).join("") : '<div class="empty">Nothing here yet.</div>' }
-    function blocks(type, arr) { var v = vis(arr); return v.length ? v.map(function (x) { var linkBtn = x.link ? '<a href="' + esc(x.link) + '" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:var(--acc);text-decoration:none;display:inline-flex;align-items:center;gap:4px">' + (x.link.indexOf("github.com") >= 0 ? "View Code &#x2197;" : "Live Website &#x2197;") + '</a>' : ''; return card(x, type, '<div class="row" style="align-items:center"><b>' + esc(x.title) + '</b>' + linkBtn + '</div>' + (x.org ? '<div style="margin:6px 0">' + x.org.split(",").map(function (t) { return '<span class="chip">' + esc(t.trim()) + '</span>' }).join("") + '</div>' : '') + '<p style="margin:8px 0 0;white-space:pre-line">' + esc(x.detail) + '</p>') }).join("") : '<div class="empty">Nothing here yet.</div>' }
+    function blocks(type, arr) { var v = vis(arr); return v.length ? v.map(function (x) { var linkBtn = x.link ? '<div style="margin-top:10px"><a href="' + esc(x.link) + '" target="_blank" rel="noopener" class="btn" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--acc);border-color:color-mix(in srgb, var(--acc) 45%, transparent);padding:5px 12px;border-radius:8px;text-decoration:none">&#x1F310; ' + esc(x.link) + ' &#x2197;</a></div>' : ''; var roleTag = x.role ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px;background:color-mix(in srgb,var(--acc) 14%,transparent);color:var(--acc);border:1px solid color-mix(in srgb,var(--acc) 30%,transparent);margin-left:8px">&#x1F451; ' + esc(x.role) + '</span>' : ''; return card(x, type, '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px"><b>' + esc(x.title) + '</b>' + roleTag + '</div>' + (x.org ? '<div style="margin:6px 0">' + x.org.split(",").map(function (t) { return '<span class="chip">' + esc(t.trim()) + '</span>' }).join("") + '</div>' : '') + '<p style="margin:8px 0 0;white-space:pre-line">' + autolink(x.detail) + '</p>' + linkBtn) }).join("") : '<div class="empty">Nothing here yet.</div>' }
     function render() {
       var p = D.profile; document.title = p.name + " · Portfolio";
       $("nm").textContent = p.name; $("hname").textContent = p.name;
@@ -952,7 +953,7 @@
     // ---- forms ----
     var F = {
       dsa: [["title", "Problem title"], ["topic", "Topic (Arrays, DP, Graphs…)"], ["difficulty", "Difficulty", "select", ["Easy", "Medium", "Hard"]], ["date", "Date", "date"], ["link", "Problem link (optional)"], ["desc", "Problem description", "area"], ["code", "Your solution code", "area"], ["expl", "How you solved it", "area"]],
-      proj: [["title", "Project name"], ["org", "Technologies (comma separated)"], ["link", "Project / Live Link (optional)"], ["detail", "What you built (one point per line)", "area"]],
+      proj: [["title", "Project name"], ["org", "Technologies (comma separated)"], ["role", "Your Role (e.g. Team Leader, Solo Developer)"], ["link", "Project / Live Link (optional)"], ["detail", "What you built (one point per line)", "area"]],
       ach: [["title", "Achievement"], ["detail", "Details", "area"]],
       edu: [["title", "Degree / course"], ["org", "Institution"], ["period", "Period"], ["detail", "Details and achievements", "area"]],
       exp: [["title", "Role"], ["org", "Company"], ["period", "Period"], ["detail", "What you did and achieved", "area"]],
